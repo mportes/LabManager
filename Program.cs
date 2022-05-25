@@ -2,7 +2,9 @@
 using LabManager.Database;
 using LabManager.Repositories;
 
-var databaseSetup = new DatabaseSetup();
+var databaseConfig = new DatabaseConfig();
+
+var databaseSetup = new DatabaseSetup(databaseConfig);
 
 // Routing
 var modelName = args[0];
@@ -10,7 +12,7 @@ var modelAction = args[1];
 
 if(modelName == "Computer")
 {
-    var computerRepository = new ComputerRepository();
+    var computerRepository = new ComputerRepository(databaseConfig);
 
     if(modelAction == "List")
     {
@@ -29,7 +31,7 @@ if(modelName == "Computer")
         var ram = args[3];
         var processor = args[4];
 
-        var connection = new SqliteConnection("Data Source=database.db");
+        var connection = new SqliteConnection(databaseConfig.ConnectionString);
         connection.Open();
 
         var command = connection.CreateCommand();
@@ -45,7 +47,7 @@ if(modelName == "Computer")
 
 if(modelName == "Lab")
 {
-    var labRepository = new LabRepository();
+    var labRepository = new LabRepository(databaseConfig);
 
     if(modelAction == "List")
     {
@@ -66,7 +68,7 @@ if(modelName == "Lab")
         var name = args[4];
         var block = args[5];
 
-        var connection = new SqliteConnection("Data Source=database.db");
+        var connection = new SqliteConnection(databaseConfig.ConnectionString);
         connection.Open();
 
         var command = connection.CreateCommand();
