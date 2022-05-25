@@ -1,13 +1,21 @@
+using LabManager.Database;
 using LabManager.Models;
 using Microsoft.Data.Sqlite;
 namespace LabManager.Repositories;
 
 class LabRepository
 {
+    private readonly DatabaseConfig _databaseConfig;
+
+    public LabRepository(DatabaseConfig databaseConfig)
+    {
+        _databaseConfig = databaseConfig;
+    }
+
     public List<Lab> GetAll()
     {
         var labs = new List<Lab>();
-        var connection = new SqliteConnection("Data Source=database.db");
+        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
         var command = connection.CreateCommand();
