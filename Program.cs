@@ -85,4 +85,30 @@ if(modelName == "Lab")
         var lab = new Lab(id, number, name, block);
         labRepository.Save(lab);
     }
+
+    if(modelAction == "Update")
+    {
+        Console.WriteLine("Lab Update");
+        var id = Convert.ToInt32(args[2]);
+        var number = args[3];
+        var name = args[4];
+        var block = args[5];
+        var lab = new Lab(id, name, number, block);
+        labRepository.Update(lab);
+    }
+
+    if(modelAction == "Delete")
+    {
+        Console.WriteLine("Lab Delete");
+        var id = Convert.ToInt32(args[2]);
+        labRepository.Delete(id);
+    }
+
+    if(modelAction == "Show")
+    {
+        Console.WriteLine("Lab Show");
+        var id = Convert.ToInt32(args[2]);
+        var lab = labRepository.GetById(id);
+        Console.WriteLine($"{lab.Id}, {lab.Number}, {lab.Name}, {lab.Block}");
+    }
 }
