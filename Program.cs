@@ -17,7 +17,6 @@ if(modelName == "Computer")
 
     if(modelAction == "List")
     {
-        Console.WriteLine("Computer List");
         var computers = computerRepository.GetAll();
         foreach(var computer in computers)
         {
@@ -27,7 +26,6 @@ if(modelName == "Computer")
 
     if(modelAction == "New")
     {
-        Console.WriteLine("Computer New");
         var id = Convert.ToInt32(args[2]);
         var ram = args[3];
         var processor = args[4];
@@ -37,27 +35,48 @@ if(modelName == "Computer")
 
     if(modelAction == "Update")
     {
-        Console.WriteLine("Computer Update");
         var id = Convert.ToInt32(args[2]);
         var ram = args[3];
         var processor = args[4];
-        var computer = new Computer(id, ram, processor);
-        computerRepository.Update(computer);
+
+        if(computerRepository.ExistsById(id))
+        {
+            var computer = new Computer(id, ram, processor);
+            computerRepository.Update(computer);
+        }
+        else
+        {
+            Console.WriteLine($"O computador com id {id} não existe!");
+        }
     }
 
     if(modelAction == "Delete")
     {
-        Console.WriteLine("Computer Delete");
         var id = Convert.ToInt32(args[2]);
-        computerRepository.Delete(id);
+
+        if(computerRepository.ExistsById(id))
+        {
+            computerRepository.Delete(id);
+        }
+        else
+        {
+            Console.WriteLine($"O computador com id {id} não existe!");
+        }
     }
 
     if(modelAction == "Show")
     {
-        Console.WriteLine("Computer Show");
         var id = Convert.ToInt32(args[2]);
-        var computer = computerRepository.GetById(id);
-        Console.WriteLine($"{computer.Id}, {computer.Ram}, {computer.Processor}");
+        
+        if(computerRepository.ExistsById(id))
+        {
+            var computer = computerRepository.GetById(id);
+            Console.WriteLine($"{computer.Id}, {computer.Ram}, {computer.Processor}");
+        }
+        else
+        {
+            Console.WriteLine($"O computador com id {id} não existe!");
+        }
     }
 }
 
@@ -67,7 +86,6 @@ if(modelName == "Lab")
 
     if(modelAction == "List")
     {
-        Console.WriteLine("Lab List");
         var labs = labRepository.GetAll();
         foreach(var lab in labs)
         {
@@ -77,7 +95,6 @@ if(modelName == "Lab")
 
     if(modelAction == "New")
     {
-        Console.WriteLine("Lab New");
         var id = Convert.ToInt32(args[2]);
         var number = args[3];
         var name = args[4];
@@ -88,27 +105,48 @@ if(modelName == "Lab")
 
     if(modelAction == "Update")
     {
-        Console.WriteLine("Lab Update");
         var id = Convert.ToInt32(args[2]);
         var number = args[3];
         var name = args[4];
         var block = args[5];
-        var lab = new Lab(id, name, number, block);
-        labRepository.Update(lab);
+
+        if(labRepository.ExistsById(id))
+        {
+            var lab = new Lab(id, name, number, block);
+            labRepository.Update(lab);
+        }
+        else
+        {
+            Console.WriteLine($"O laboratório com id {id} não existe!");
+        }
     }
 
     if(modelAction == "Delete")
     {
-        Console.WriteLine("Lab Delete");
         var id = Convert.ToInt32(args[2]);
-        labRepository.Delete(id);
+
+        if(labRepository.ExistsById(id))
+        {
+            labRepository.Delete(id);
+        }
+        else
+        {
+            Console.WriteLine($"O laboratório com id {id} não existe!");
+        }
     }
 
     if(modelAction == "Show")
     {
-        Console.WriteLine("Lab Show");
         var id = Convert.ToInt32(args[2]);
-        var lab = labRepository.GetById(id);
-        Console.WriteLine($"{lab.Id}, {lab.Number}, {lab.Name}, {lab.Block}");
+
+        if(labRepository.ExistsById(id))
+        {
+            var lab = labRepository.GetById(id);
+            Console.WriteLine($"{lab.Id}, {lab.Number}, {lab.Name}, {lab.Block}");
+        }
+        else
+        {
+            Console.WriteLine($"O laboratório com id {id} não existe!");
+        }
     }
 }
