@@ -96,7 +96,7 @@ if(modelName == "Lab")
     if(modelAction == "New")
     {
         var id = Convert.ToInt32(args[2]);
-        var number = args[3];
+        var number = Convert.ToInt32(args[3]);
         var name = args[4];
         var block = args[5];
         var lab = new Lab(id, number, name, block);
@@ -106,13 +106,13 @@ if(modelName == "Lab")
     if(modelAction == "Update")
     {
         var id = Convert.ToInt32(args[2]);
-        var number = args[3];
+        var number = Convert.ToInt32(args[3]);
         var name = args[4];
         var block = args[5];
 
         if(labRepository.ExistsById(id))
         {
-            var lab = new Lab(id, name, number, block);
+            var lab = new Lab(id, number, name, block);
             labRepository.Update(lab);
         }
         else

@@ -119,7 +119,7 @@ class LabRepository
 
     private Lab ReaderToLab(SqliteDataReader reader)
     {
-        var lab = new Lab(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetString(3));
+        var lab = new Lab(reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3));
         return lab;
     }
 }
