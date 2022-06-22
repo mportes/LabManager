@@ -15,29 +15,27 @@ class ComputerRepository
 
     public List<Computer> GetAll()
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
         var computers = connection.Query<Computer>("SELECT * FROM Computers;").ToList();
 
-        connection.Close();
         return computers;
     }
 
     public Computer Save(Computer computer)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
         connection.Execute("INSERT INTO Computers VALUES(@Id, @Ram, @Processor);", computer);
 
-        connection.Close();
         return computer;
     }
 
     public Computer Update(Computer computer)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
         connection.Execute(@"
@@ -46,32 +44,29 @@ class ComputerRepository
             WHERE id = @Id;
         ", computer);
         
-        connection.Close();
         return computer;
     }
 
     public void Delete(int id)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
         connection.Execute("DELETE FROM Computers WHERE id = @Id;", new { Id = id });
-        connection.Close();
     }
 
     public Computer GetById(int id)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
         var computer = connection.QuerySingle<Computer>("SELECT * FROM Computers WHERE id = @Id;", new { Id = id });
         
-        connection.Close();
         return computer;
     }
 
     public bool ExistsById(int id)
     {
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
         var result = Convert.ToBoolean(connection.ExecuteScalar("SELECT count(id) FROM Computers WHERE id = @Id;" , new { Id = id }));
