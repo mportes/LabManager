@@ -13,12 +13,12 @@ class ComputerRepository
         _databaseConfig = databaseConfig;
     }
 
-    public List<Computer> GetAll()
+    public IEnumerable<Computer> GetAll()
     {
         using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
 
-        var computers = connection.Query<Computer>("SELECT * FROM Computers;").ToList();
+        var computers = connection.Query<Computer>("SELECT * FROM Computers;");
 
         return computers;
     }
