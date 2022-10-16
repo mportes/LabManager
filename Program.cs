@@ -1,11 +1,8 @@
-﻿using Microsoft.Data.Sqlite;
-using LabManager.Database;
-using LabManager.Repositories;
+﻿using LabManager.Repositories;
 using LabManager.Models;
 
-var databaseConfig = new DatabaseConfig();
-
-var databaseSetup = new DatabaseSetup(databaseConfig);
+SystemContext context = new SystemContext();
+context.Database.EnsureCreated();
 
 // Routing
 var modelName = args[0];
@@ -13,7 +10,7 @@ var modelAction = args[1];
 
 if(modelName == "Computer")
 {
-    var computerRepository = new ComputerRepository(databaseConfig);
+    var computerRepository = new ComputerRepository(context);
 
     if(modelAction == "List")
     {
@@ -82,7 +79,7 @@ if(modelName == "Computer")
 
 if(modelName == "Lab")
 {
-    var labRepository = new LabRepository(databaseConfig);
+    var labRepository = new LabRepository(context);
 
     if(modelAction == "List")
     {

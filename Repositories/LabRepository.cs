@@ -1,76 +1,42 @@
-using Dapper;
-using LabManager.Database;
 using LabManager.Models;
-using Microsoft.Data.Sqlite;
 namespace LabManager.Repositories;
 
 class LabRepository
 {
-    private readonly DatabaseConfig _databaseConfig;
+    private readonly SystemContext _context;
 
-    public LabRepository(DatabaseConfig databaseConfig)
+    public LabRepository(SystemContext context)
     {
-        _databaseConfig = databaseConfig;
+        _context = context;
     }
 
-    public IEnumerable<Lab> GetAll()
+    public IEnumerable<Lab> GetAll() => _context.Labs;
+
+    public Lab Save(Lab Lab)
     {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        var labs = connection.Query<Lab>("SELECT * FROM Labs;");
-        
-        return labs;
-    }
-
-    public Lab Save(Lab lab)
-    {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        connection.Execute("INSERT INTO Labs VALUES(@Id, @Number, @Name, @Block);", lab);
-        
-        return lab;
+        _context.Labs.Add(Lab);
+        _context.SaveChanges();
+        return Lab;
     }
 
     public Lab Update(Lab lab)
     {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        connection.Execute(@"
-            UPDATE Labs 
-            SET number = @Number, name = @Name, block = @Block
-            WHERE id = @Id;
-        ", lab);
-        
+        Lab updateLab = _context.Labs.Find(lab.Id);
+        updateLab.Number = lab.Number;
+        updateLab.Name = lab.Name;
+        updateLab.Block = lab.Block;
+        _context.Labs.Update(updateLab);
+        _context.SaveChanges();
         return lab;
     }
 
     public void Delete(int id)
     {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-        connection.Execute("DELETE FROM Labs WHERE id = @Id;", new { Id = id });
+        _context.Labs.Remove(_context.Labs.Find(id));
+        _context.SaveChanges();
     }
 
-    public Lab GetById(int id)
-    {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
+    public Lab GetById(int id) => _context.Labs.Find(id);
 
-        var lab = connection.QuerySingle<Lab>("SELECT * FROM Labs WHERE id = @Id;", new { Id = id });
-        
-        return lab;
-    }
-
-    public bool ExistsById(int id)
-    {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        var result = connection.ExecuteScalar<bool>("SELECT count(id) FROM Labs WHERE id = @Id;", new { Id = id });
-
-        return result;
-    }
+    public bool ExistsById(int id) => _context.Labs.Find(id) == null ? false : true;
 }

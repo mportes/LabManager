@@ -1,76 +1,41 @@
-using Dapper;
-using LabManager.Database;
 using LabManager.Models;
-using Microsoft.Data.Sqlite;
 namespace LabManager.Repositories;
 
 class ComputerRepository
 {
-    private readonly DatabaseConfig _databaseConfig;
+    private readonly SystemContext _context;
 
-    public ComputerRepository(DatabaseConfig databaseConfig)
+    public ComputerRepository(SystemContext context)
     {
-        _databaseConfig = databaseConfig;
+        _context = context;
     }
 
-    public IEnumerable<Computer> GetAll()
-    {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        var computers = connection.Query<Computer>("SELECT * FROM Computers;");
-
-        return computers;
-    }
+    public IEnumerable<Computer> GetAll() => _context.Computers;
 
     public Computer Save(Computer computer)
     {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        connection.Execute("INSERT INTO Computers VALUES(@Id, @Ram, @Processor);", computer);
-
+        _context.Computers.Add(computer);
+        _context.SaveChanges();
         return computer;
     }
 
     public Computer Update(Computer computer)
     {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        connection.Execute(@"
-            UPDATE Computers 
-            SET ram = @Ram, processor = @Processor 
-            WHERE id = @Id;
-        ", computer);
-        
+        Computer updateComputer = _context.Computers.Find(computer.Id);
+        updateComputer.Ram = computer.Ram;
+        updateComputer.Processor = computer.Processor;
+        _context.Computers.Update(updateComputer);
+        _context.SaveChanges();
         return computer;
     }
 
     public void Delete(int id)
     {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-        connection.Execute("DELETE FROM Computers WHERE id = @Id;", new { Id = id });
+        _context.Computers.Remove(_context.Computers.Find(id));
+        _context.SaveChanges();
     }
 
-    public Computer GetById(int id)
-    {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
+    public Computer GetById(int id) => _context.Computers.Find(id);
 
-        var computer = connection.QuerySingle<Computer>("SELECT * FROM Computers WHERE id = @Id;", new { Id = id });
-        
-        return computer;
-    }
-
-    public bool ExistsById(int id)
-    {
-        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
-        connection.Open();
-
-        var result = connection.ExecuteScalar<bool>("SELECT count(id) FROM Computers WHERE id = @Id;" , new { Id = id });
-
-        return result;
-    }
+    public bool ExistsById(int id) => _context.Computers.Find(id) == null ? false : true;
 }
